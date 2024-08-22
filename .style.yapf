@@ -1,0 +1,19 @@
+[style]
+based_on_style = pep8
+
+# Indentation
+indent_width = 2
+
+# Formatting options
+column_limit = 100
+dedent_closing_brackets = True
+split_before_logical_operator = True
+
+# Disable some splits to match Colab style
+split_before_expression_after_opening_paren = False
+split_before_named_assigns = False
+split_penalty_import_names = 0
+
+# Newline options
+coalesce_brackets = True
+allow_split_before_dict_value = False
