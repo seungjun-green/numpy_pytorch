@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "numpy_pytorch"
+version = "0.1.0"
+description = "Numpy Implementation of PyTorch"
+authors = [
+    {name = "Seungjun Lee", email = "lsj3285007@gmail.com"},
+]
+dependencies = [
+    "colorama",
+    "numpy",
+    "torch",
+    "ml_collections"
+]

@@ -7,10 +7,10 @@ from colorama import Fore, Style, init
 import numpy as np
 import torch
 import torch.nn as nn
-from numpy_model.configs import get_model_configs
+from numpy_pytorch.test_configs import get_model_configs
 from ml_collections import ConfigDict
-from numpy_model import models
-from numpy_model import utils
+from numpy_pytorch import models
+from numpy_pytorch import utils
 
 model_configs = get_model_configs()
 init(autoreset=True)
