@@ -1,1 +1,4 @@
+colorama
 numpy
+torch
+ml_collections
