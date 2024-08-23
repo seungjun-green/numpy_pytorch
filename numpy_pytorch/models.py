@@ -231,7 +231,6 @@ class LSTM:
     f_t = HelperFunction.sigmoid(np.dot(x_t, self.W_if.T) + self.b_if + np.dot(h_prev, self.W_hf.T) + self.b_hf) # (N, hidden_size)
     g_t = HelperFunction.sigmoid(np.dot(x_t, self.W_ig.T) + self.b_ig + np.dot(h_prev, self.W_hg.T) + self.b_hg) # (N, hidden_size)
     o_t = HelperFunction.sigmoid(np.dot(x_t, self.W_io.T) + self.b_io + np.dot(h_prev, self.W_ho.T) + self.b_ho) # (N, hidden_size)
-
     c_t = np.multiply(f_t, c_prev) + np.multiply(i_t, g_t)
     h_t = np.multiply(o_t, np.tanh(c_t))
 

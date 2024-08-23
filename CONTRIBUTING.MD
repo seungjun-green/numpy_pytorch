@@ -1,3 +1,5 @@
 # How to Contribute
 
-Welcome any contribution :)
+Welcoming any contributions! 😊
+
+If you have ideas for new features, improvements, or bug fixes, please feel free to contribute
