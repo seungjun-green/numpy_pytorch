@@ -160,13 +160,13 @@ class Embedding:
 
 
 class RNN:
-  def __init__(self, embedding_dim, hidden_dim):
-    self.embedding_dim = embedding_dim
-    self.hidden_dim = hidden_dim
-    self.W_xh = np.random.rand(hidden_dim, embedding_dim)
-    self.W_hh = np.random.rand(hidden_dim, hidden_dim)
-    self.b_xh = np.random.rand(hidden_dim)
-    self.b_hh = np.random.rand(hidden_dim)
+  def __init__(self, input_size, hidden_size, batch_first=True):
+    self.input_size = input_size
+    self.hidden_size = hidden_size
+    self.W_xh = np.random.rand(hidden_size, input_size)
+    self.W_hh = np.random.rand(hidden_size, hidden_size)
+    self.b_xh = np.random.rand(hidden_size)
+    self.b_hh = np.random.rand(hidden_size)
 
 
   def forward(self, x):
@@ -174,16 +174,16 @@ class RNN:
     input:
       x: (N, L, embeeding_dim)
     outputs:
-      output: (N, L, hidden_dim)
-      last_hidden_state: (1, N, hidden_dim)
+      output: (N, L, hidden_size)
+      last_hidden_state: (1, N, hidden_size)
     '''
     batch_size, seq_length = x.shape[0], x.shape[1]
-    h_0 = np.zeros((batch_size, self.hidden_dim))
+    h_0 = np.zeros((batch_size, self.hidden_size))
     hidden_states = []
     hidden_states.append(h_0)
     for i in range(seq_length):
         next_h = np.dot(x[:, i, :], self.W_xh.T) + self.b_xh + np.dot(hidden_states[-1], self.W_hh.T) + self.b_hh
-        next_h = HelperFunction.tanh(next_h) # (N, hidden_dim)
+        next_h = HelperFunction.tanh(next_h) # (N, hidden_size)
         hidden_states.append(next_h)
 
     output = np.stack(hidden_states[1:], axis=1)
@@ -193,7 +193,7 @@ class RNN:
 
 
 class LSTM:
-  def __init__(self, input_size, hidden_size):
+  def __init__(self, input_size, hidden_size, batch_first=True):
     self.input_size = input_size
     self.hidden_size = hidden_size
 
@@ -268,7 +268,7 @@ class LSTM:
     last_cell_state = c_records[-1]
 
 
-    return output, last_hidden_state[np.newaxis, :], last_cell_state[np.newaxis, :]
+    return output, (last_hidden_state[np.newaxis, :], last_cell_state[np.newaxis, :])
 
 class MultiheadAttention:
   def __init__(self, embedding_dim, num_heads, source_length, target_length):

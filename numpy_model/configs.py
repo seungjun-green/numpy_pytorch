@@ -35,18 +35,18 @@ def get_model_configs():
     }
     
     config.RNN = {
-        'model_1': {'input_size': 10, 'hidden_size': 20, 'input_shape': (32, 5, 10)},
-        'model_2': {'input_size': 20, 'hidden_size': 40, 'input_shape': (32, 10, 20)}
+        'model_1': {'input_size': 10, 'hidden_size': 20, 'batch_first': True, 'input_shape': (32, 5, 10)},
+        'model_2': {'input_size': 20, 'hidden_size': 40, 'batch_first': True, 'input_shape': (32, 10, 20)}
     }
     
     config.LSTM = {
-        'model_1': {'input_size': 10, 'hidden_size': 20, 'input_shape': (32, 5, 10)},
-        'model_2': {'input_size': 20, 'hidden_size': 40, 'input_shape': (32, 10, 20)}
+        'model_1': {'input_size': 10, 'hidden_size': 20, 'batch_first': True, 'input_shape': (32, 5, 10)},
+        'model_2': {'input_size': 20, 'hidden_size': 40, 'batch_first': True,'input_shape': (32, 10, 20)}
     }
     
-    config.MultiheadAttention = {
-        'model_1': {'embed_dim': 5, 'num_heads': 1, 'input_shape': (32, 5, 10)},
-        'model_2': {'embed_dim': 10, 'num_heads': 2, 'input_shape': (32, 10, 20)}
-    }
+    # config.MultiheadAttention = {
+    #     'model_1': {'embed_dim': 5, 'num_heads': 1, 'input_shape': (32, 5, 10)},
+    #     'model_2': {'embed_dim': 10, 'num_heads': 2, 'input_shape': (32, 10, 20)}
+    # }
     
     return config
