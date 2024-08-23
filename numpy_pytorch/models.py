@@ -33,8 +33,8 @@ class Linear:
     output: (N, out_features)
     '''
     self.input = x
-    self.output = np.dot(x, self.weight.T) + self.bias
-    self.output = HelperFunction.relu(x)
+    self.output = np.dot(self.input, self.weight.T) + self.bias
+    self.output = HelperFunction.relu(self.output)
     return self.output
   
   def backward(self, grad_output):    
