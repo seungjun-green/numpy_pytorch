@@ -12,6 +12,11 @@ class HelperFunction:
   @staticmethod
   def tanh(x):
     return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+  
+  @staticmethod
+  def relu_derivative(x):
+    return np.where(x > 0, 1, 0)
+
 
 class Linear:
   def __init__(self, in_features, out_features, bias=True):
@@ -19,15 +24,33 @@ class Linear:
     self.out_features = out_features
     self.weight = np.random.rand(out_features, in_features)
     self.bias = np.random.rand(out_features)
-
+    self.grad_weight = np.zeros_like(self.weight)
+    self.grad_bias = np.zeros_like(self.bias)
+    
   def forward(self, x):
     '''
     input: (N, in_features)
     output: (N, out_features)
     '''
-    x = np.dot(x, self.weight.T) + self.bias
-    x = HelperFunction.relu(x)
-    return x
+    self.input = x
+    self.output = np.dot(x, self.weight.T) + self.bias
+    self.output = HelperFunction.relu(x)
+    return self.output
+  
+  def backward(self, grad_output):    
+    # gradient of loss w.r.t weight and bias
+    self.grad_weight = np.dot(grad_output.T, self.input)
+    self.grad_bias = np.sum(grad_output, axis=0)
+    
+    grad_input = np.dot(grad_output, self.weight)
+    return grad_input
+  
+  def update_parameters(self, learning_rate):
+    self.weight = self.weight - learning_rate * self.grad_weight
+    self.bias = self.bias - learning_rate * self.grad_bias 
+    
+
+    
     
 class Conv2d:
   def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
