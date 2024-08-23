@@ -66,7 +66,6 @@ class Conv2d:
     return result
 
 
-
 class ConvTranspose2d:
   def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
     self.in_channels = in_channels
@@ -141,8 +140,8 @@ class MaxPool2d:
 
 
 class Embedding:
-  def __init__(self, vocab_size, embedding_dim):
-    self.E = np.random.randn(vocab_size, embedding_dim)
+  def __init__(self, num_embeddings, embedding_dim):
+    self.E = np.random.randn(num_embeddings, embedding_dim)
 
   def forward(self, x):
     '''
@@ -271,7 +270,7 @@ class LSTM:
 
     return output, last_hidden_state[np.newaxis, :], last_cell_state[np.newaxis, :]
 
-class MultiHeadAttention:
+class MultiheadAttention:
   def __init__(self, embedding_dim, num_heads, source_length, target_length):
     self.d_k = embedding_dim // num_heads
     self.d_v = embedding_dim // num_heads

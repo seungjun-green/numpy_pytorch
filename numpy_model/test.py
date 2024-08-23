@@ -1,54 +1,65 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from colorama import Fore, Style, init
 import numpy as np
 import torch
 import torch.nn as nn
-from model_configs import get_model_configs
+from numpy_model.configs import get_model_configs
 from ml_collections import ConfigDict
 from numpy_model import models
-
 
 model_configs = get_model_configs()
 init(autoreset=True)
 
-input_configs = {
-    'linear': [np.random.rand(10, 5), np.random.rand(20, 5)],
-    'conv': [np.random.rand(1, 3, 64, 64)],
-    'transpose_conv': [np.random.rand(1, 3, 64, 64)],
-    'rnn': [np.random.rand(32, 10, 10)],  # (seq_len, batch, input_size)
-    'lstm': [np.random.rand(32, 256, 10)],  # (seq_len, batch, input_size)
+model_constructors = {
+    'Linear': (models.Linear, nn.Linear),
+    'Conv2d': (models.Conv2d, nn.Conv2d),
+    'ConvTranspose2d': (models.ConvTranspose2d, nn.ConvTranspose2d),
+    'MaxPool2d': {models.MaxPool2d, nn.MaxPool2d},
+    'Embedding': {models.Embedding, nn.Embedding},
+    'RNN': {models.RNN, nn.RNN},
+    'LSTM': {models.LSTM, nn.LSTM},
+    'MultiheadAttention': {models.MultiheadAttention, nn.MultiheadAttention},
 }
 
-def test_numpy_models(example_inputs, np_model, torch_model):
-    """take multiple examples of input, then test whether outputs from 
-    numpy model and torch model are same.
-
-    Args:
-        example_inputs (_type_): _description_
-        np_model (_type_): _description_
-        torch_model (_type_): _description_
+def test_numpy_model(model_type, model_name, model_params, input_shape):
+    """take multiple examples of input, then test whether outputs from  numpy model and torch model are same.
     """
-    np_inputs = example_inputs
-    torch_inputs = [torch.from_numpy(input) for input in example_inputs]
     
-    np_outputs = [np_model.forward(input) for input in np_inputs]
-    torch_outputs = [torch_model(input) for input in torch_inputs]
+    # define inputs
+    if model_type == 'Embedding':
+        np_input = np.random.randint(0, model_params['num_embeddings'], input_shape).astype(np.int64)
+        torch_input = torch.tensor(np_input, dtype=torch.int64)
+    else:
+        np_input = np.random.randn(*input_shape)
+        torch_input = torch.tensor(np_input, dtype=torch.float32)
     
-    for i in range(len(np_outputs)):
-        if np_outputs[i].shape == torch_outputs[i].shape:
-            pass
-        else:
-            raise ValueError(f"Test Case {i+1} failed. Output shape of np model and output of torch model are different.")
+    # define models
+    np_constructor, torch_constructor = model_constructors[model_type]
+    np_model = np_constructor(**model_params)
+    torch_model = torch_constructor(**model_params)
     
-    print(Fore.GREEN + "All test cases passed!" + Style.RESET_ALL)
+    # forward process
+    np_output = np_model.forward(np_input)
+    torch_output = torch_model(torch_input)
+
+    assert np_output.shape == torch_output.shape, f"Output shape mismatch for {model_type}-{model_name}"
     
-for model_type, models in model_configs.items():
-    for model_name, params in models.items():
-        print(f"Testing {model_type} - {model_name} with params {params}")
+    
+def test():
+    for model_type, test_configs in model_configs.items():
+        print("Running test for", model_type)
+        for model_name, params in test_configs.items():
+            model_params = {k: v for k, v in params.items() if k != 'input_shape'}
+            test_numpy_model(model_type, model_name, model_params, params['input_shape'])
         
-        # Here, you would initialize the model using the params
-        if model_type == 'linear':
-            np_model = models.Linear(*params)
-            torch_model = nn.Linear(*params)
-            test_numpy_models(input_configs[model_type], np_model, torch_model)
-        else:
-            pass
+        print(f"All test cases passed for {model_type}.")
+        
+    print("Congratulations, All test cases are passed!.")
+
+
+if __name__== '__main__':
+    test()
