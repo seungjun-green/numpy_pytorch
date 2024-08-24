@@ -17,3 +17,14 @@ class BinaryCrossEntropy:
     @staticmethod
     def loss_derivative(predicted, target):
         return (predicted - target) / (predicted * (1 - predicted))
+    
+    
+class CrossEntropy:
+    @staticmethod
+    def loss(predicted, target):
+        return -np.mean(target * np.log(predicted))
+
+    @staticmethod
+    def loss_derivative(predicted, target):
+        return predicted - target
+    
